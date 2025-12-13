@@ -33,7 +33,25 @@ public class RoomBooking{
     public void setphoneNumber(String phoneNumber){
         this.phoneNumber = phoneNumber;
     }
-    public Boo
+    public Boolean getverified(){
+        return verified;
+    }
+    public void setverified(Boolean verified){
+        this.verified = verified;
+    }
+    public Boolean getactive(){
+        return active;
+    }
+    public void setactive(Boolean active){
+        this.active = active;
+    }
+    public String getrole(){
+        return role;
+    }
+    public void setrole(String role){
+        this.role = role;
+    }
+    public Timestamp getcreatedAt()
 
 
 
