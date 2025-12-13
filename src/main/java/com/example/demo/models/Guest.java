@@ -12,7 +12,6 @@ public class RoomBooking{
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
@@ -20,8 +19,22 @@ public class RoomBooking{
         return fullName;
     }
     public void setfullName(String fullName){
-        this.fullName = f
+        this.fullName = fullName;
     }
+    public String getemail(){
+        return email;
+    }
+    public void setemail(String email){
+        this.email = email;
+    }
+    public String getphoneNumber(){
+        return phoneNumber;
+    }
+    public void setphoneNumber(String phoneNumber){
+        this.phoneNumber = phoneNumber;
+    }
+    public Boo
+
 
 
 }
