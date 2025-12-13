@@ -1,5 +1,5 @@
 package com.example.demo.model;
-
+import java.sql.Timestamp;
 public class RoomBooking{
     private Long id;
     private String fullName;
@@ -51,7 +51,12 @@ public class RoomBooking{
     public void setrole(String role){
         this.role = role;
     }
-    public Timestamp getcreatedAt()
+    public Timestamp getcreatedAt(){
+        return createdAt;
+    }
+    public void setcreatedAt(Timestamp createdAt){
+        this.createdAt = createdAt;
+    }
 
 
 
