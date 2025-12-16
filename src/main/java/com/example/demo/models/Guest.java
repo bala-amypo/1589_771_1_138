@@ -3,11 +3,15 @@ package com.example.demo.model;
 import java.security.Timestamp;
 @Entity
 public class Guest {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String fullName;
+    @Column(unique = true)
     private String email;
     private String phoneNumber;
     private Boolean verified;
+    @Column(default = true)
     private Boolean active;
     private String role;
     private Timestamp createdAt;
