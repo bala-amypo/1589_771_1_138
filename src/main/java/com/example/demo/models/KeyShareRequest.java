@@ -1,10 +1,15 @@
 package com.example.demo.model;
 
-import java.security.Timestamp;
+import java.time.LocalDateTime;
+import jakarta.persistence.*;
 @Entity
 public class KeyShareRequest {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @ManyToOne
     private DigitalKey digitalKey;
+    @ManyToOne
     private Guest sharedBy;
     private Guest sharedWith;
     private Timestamp shareStart;
