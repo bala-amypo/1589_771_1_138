@@ -11,13 +11,14 @@ public class KeyShareRequest {
     private DigitalKey digitalKey;
     @ManyToOne
     private Guest sharedBy;
+    @ManyToOne
     private Guest sharedWith;
-    private Timestamp shareStart;
-    private Timestamp shareEnd;
+    private LocalDateTime shareStart;
+    private LocalDateTime shareEnd;
     private String status;
-    private Timestamp createdAt;
-    public KeyShareRequest(DigitalKey digitalKey, Guest sharedBy, Guest sharedWith, Timestamp shareStart,
-            Timestamp shareEnd, String status, Timestamp createdAt) {
+    private LocalDateTime createdAt;
+    public KeyShareRequest(DigitalKey digitalKey, Guest sharedBy, Guest sharedWith, LocalDateTime shareStart,
+            LocalDateTime shareEnd, String status, LocalDateTime createdAt) {
         this.digitalKey = digitalKey;
         this.sharedBy = sharedBy;
         this.sharedWith = sharedWith;
@@ -62,16 +63,16 @@ public class KeyShareRequest {
     public void setSharedWith(Guest sharedWith) {
         this.sharedWith = sharedWith;
     }
-    public void setShareStart(Timestamp shareStart) {
+    public void setShareStart(LocalDateTime shareStart) {
         this.shareStart = shareStart;
     }
-    public void setShareEnd(Timestamp shareEnd) {
+    public void setShareEnd(LocalDateTime shareEnd) {
         this.shareEnd = shareEnd;
     }
     public void setStatus(String status) {
         this.status = status;
     }
-    public void setCreatedAt(Timestamp createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
     
