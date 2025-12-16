@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import java.security.Timestamp;
+@Entity
 public class Guest {
     private long id;
     private String fullName;

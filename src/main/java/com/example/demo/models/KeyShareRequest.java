@@ -1,7 +1,7 @@
 package com.example.demo.model;
 
 import java.security.Timestamp;
-
+@Entity
 public class KeyShareRequest {
     private long id;
     private DigitalKey digitalKey;

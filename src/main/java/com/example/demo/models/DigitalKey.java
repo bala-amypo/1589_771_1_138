@@ -1,7 +1,7 @@
 package com.example.demo.model;
 
 import java.security.Timestamp;
-
+@Entity
 public class DigitalKey {
     private Long id;
     private RoomBooking booking;
