@@ -1,30 +1,30 @@
 package com.example.demo.model;
-
-import java.security.Timestamp;
+import jakarta.persistence.*;
+import java.sql.LocalDateTime;
 @Entity
 public class Guest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @Column(nullable = false)
     private String fullName;
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
     private String phoneNumber;
     private Boolean verified;
-    @Column(default = true)
-    private Boolean active;
+    private Boolean active = true;
     private String role;
-    private Timestamp createdAt;
-    public Guest(String fullName, String email, String phoneNumber, Boolean verified, Boolean active, String role,
-            Timestamp createdAt) {
+    private LocalDateTime createdAt;
+    public Guest(String fullName, String email, String phoneNumber, Boolean verified, Boolean active, String role) {
         this.fullName = fullName;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.verified = verified;
         this.active = active;
         this.role = role;
-        this.createdAt = createdAt;
     }
+
+    @Pre
     public long getId() {
         return id;
     }
@@ -70,9 +70,7 @@ public class Guest {
     public void setRole(String role) {
         this.role = role;
     }
-    public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
-    }
+   
 
 
 
