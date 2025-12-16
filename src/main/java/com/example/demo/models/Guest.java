@@ -9,5 +9,14 @@ public class Guest {
     private String role;
     private Timestamp createdAt;
     public Guest(){}
-    public Guest(Long id,String fullName,String email,String phoneNumber,Boolean verified,Boolean active,Stri)
+    public Guest(Long id,String fullName,String email,String phoneNumber,Boolean verified,Boolean active,String role,Timestamp createdAt){
+        this.id = id;
+        this.fullName = fullName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.verified = verified;
+        this.active = active;
+        this.role = role;
+        this.createdAt = createdAt;
+    }
 }
