@@ -1,8 +1,10 @@
 package com.example.demo.model;
-
+import jakarta.persisten
 import java.security.Timestamp;
 @Entity
 public class AccessLog {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private DigitalKey digitalKey;
     private Guest guest;
