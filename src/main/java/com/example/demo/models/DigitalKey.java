@@ -1,14 +1,17 @@
 package com.example.demo.model;
 
-import java.security.Timestamp;
+import java.sql.LocalDateTime;
+import jakarta.persistence.*;
 @Entity
 public class DigitalKey {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private RoomBooking booking;
     private String keyValue;
-    private Timestamp issuedAt;
-    private Timestamp expiresAt;
-    private Boolean active;
+    private LocalDateTime issuedAt;
+    private LocalDateTime expiresAt;
+    private Boolean active = true;
     public DigitalKey(RoomBooking booking, String keyValue, Timestamp issuedAt, Timestamp expiresAt, Boolean active) {
         this.booking = booking;
         this.keyValue = keyValue;

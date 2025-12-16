@@ -24,7 +24,13 @@ public class Guest {
         this.role = role;
     }
 
-    @Pre
+    @PrePersist
+    protected void onCreate(){
+        this.createdAt = LocalDateTime.now();
+        if(this.active == null){
+            this.active = true;
+        }
+    }
     public long getId() {
         return id;
     }
