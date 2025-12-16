@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public class AccessLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @ManyToOne
     @JoinColumn(name = "digital_key_id" , nullable = false)
     private DigitalKey digitalKey;
@@ -16,14 +16,14 @@ public class AccessLog {
     private String result;
     private String reason;
     public AccessLog(){}
-    public AccessLog(DigitalKey digitalKey, Guest guest, Timestamp accessTime, String result, String reason) {
+    public AccessLog(DigitalKey digitalKey, Guest guest, LocalDateTime accessTime, String result, String reason) {
         this.digitalKey = digitalKey;
         this.guest = guest;
-        this.accessTime = accessTime;
+        setAccessTime(accessTime);
         this.result = result;
         this.reason = reason;
     }
-    public long getId() {
+    public Long getId() {
         return id;
     }
     public DigitalKey getDigitalKey() {
@@ -41,7 +41,7 @@ public class AccessLog {
     public String getReason() {
         return reason;
     }
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
     public void setDigitalKey(DigitalKey digitalKey) {
