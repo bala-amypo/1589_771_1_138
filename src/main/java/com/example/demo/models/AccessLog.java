@@ -1,6 +1,6 @@
 package com.example.demo.model;
 import jakarta.persistence.*;
-import java.security.Timestamp;
+import java.time.LocalDateTime;
 @Entity
 public class AccessLog {
     @Id
@@ -12,10 +12,10 @@ public class AccessLog {
     @ManyToOne
     @JoinColumn(name = "guest_id" , nullable = false)
     private Guest guest;
-    private Timestamp accessTime;
+    private LocalDateTime accessTime;
     private String result;
     private String reason;
-    public Accesslog(){}
+    public AccessLog(){}
     public AccessLog(DigitalKey digitalKey, Guest guest, Timestamp accessTime, String result, String reason) {
         this.digitalKey = digitalKey;
         this.guest = guest;
@@ -32,7 +32,7 @@ public class AccessLog {
     public Guest getGuest() {
         return guest;
     }
-    public Timestamp getAccessTime() {
+    public LocalDateTime getAccessTime() {
         return accessTime;
     }
     public String getResult() {
@@ -50,7 +50,10 @@ public class AccessLog {
     public void setGuest(Guest guest) {
         this.guest = guest;
     }
-    public void setAccessTime(Timestamp accessTime) {
+    public void setAccessTime(LocalDateTime accessTime) {
+        if(accessTime.isAfter(LocalDateTime.now())){
+            throw new IllegalArgumentException("Access time cannot be in the future");
+        }
         this.accessTime = accessTime;
     }
     public void setResult(String result) {
