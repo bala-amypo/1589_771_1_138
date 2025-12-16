@@ -8,7 +8,7 @@ public class DigitalKey {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private RoomBooking booking;
-    @Column
+    @Column(unique = true)
     private String keyValue;
     private LocalDateTime issuedAt;
     private LocalDateTime expiresAt;
