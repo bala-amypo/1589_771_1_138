@@ -3,21 +3,25 @@ package com.example.demo.model;
 import jakarta.persistence.*; 
 import java.time.LocalDateTime; 
 
-
 @Entity
 public class Guest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    
     @Column(nullable = false)
     private String fullName;
+    
     @Column(unique = true, nullable = false)
     private String email;
+    
     private String phoneNumber;
     private Boolean verified;
     private Boolean active = true;
     private String role;
     private LocalDateTime createdAt;
+    public Guest() {}
+
     public Guest(String fullName, String email, String phoneNumber, Boolean verified, Boolean active, String role) {
         this.fullName = fullName;
         this.email = email;
@@ -34,54 +38,21 @@ public class Guest {
             this.active = true;
         }
     }
-    public long getId() {
-        return id;
-    }
-    public String getFullName() {
-        return fullName;
-    }
-    public String getEmail() {
-        return email;
-    }
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-    public Boolean getVerified() {
-        return verified;
-    }
-    public Boolean getActive() {
-        return active;
-    }
-    public String getRole() {
-        return role;
-    }
-    public Timestamp getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
-    public void setId(long id) {
-        this.id = id;
-    }
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-    public void setVerified(Boolean verified) {
-        this.verified = verified;
-    }
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
-    public void setRole(String role) {
-        this.role = role;
-    }
-   
-
-
-
-    
+    public long getId() { return id; }
+    public void setId(long id) { this.id = id; }
+    public String getFullName() { return fullName; }
+    public void setFullName(String fullName) { this.fullName = fullName; }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+    public String getPhoneNumber() { return phoneNumber; }
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+    public Boolean getVerified() { return verified; }
+    public void setVerified(Boolean verified) { this.verified = verified; }
+    public Boolean getActive() { return active; }
+    public void setActive(Boolean active) { this.active = active; }
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 }
