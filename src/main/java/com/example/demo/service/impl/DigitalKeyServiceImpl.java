@@ -1,48 +1,48 @@
-// package com.example.demo.service.impl;
+package com.example.demo.service.impl;
 
-// import org.springframework.stereotype.Service;
-// import org.springframework.beans.factory.annotation.Autowired;
-// import java.util.List;
-// import java.util.UUID;
+import com.example.demo.model.DigitalKey;
+import com.example.demo.model.RoomBooking;
+import com.example.demo.repository.DigitalKeyRepository;
+import com.example.demo.repository.RoomBookingRepository;
+import com.example.demo.service.DigitalKeyService;
+import com.example.demo.exception.ResourceNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-// @Service
-// public class DigitalKeyServiceImpl implements DigitalKeyService {
+import java.util.List;
 
-//     @Autowired
-//     private DigitalKeyRepository keyRepository;
-    
-//     @Autowired
-//     private RoomBookingRepository bookingRepository;
+@Service
+public class DigitalKeyServiceImpl implements DigitalKeyService {
 
-//     @Override
-//     public DigitalKey generateKey(Long bookingId) {
-//         RoomBooking booking = bookingRepository.findById(bookingId)
-//              .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
-//         if (!booking.isActive()) {
-//             throw new IllegalStateException("Cannot generate key for an inactive booking.");
-//         }
+    @Autowired
+    private DigitalKeyRepository digitalKeyRepository;
 
-//         DigitalKey newKey = new DigitalKey();
-//         newKey.setBooking(booking);
-//         newKey.setKeyCode(UUID.randomUUID().toString()); // Generate unique key code
-//         newKey.setActive(true);
+    @Autowired
+    private RoomBookingRepository roomBookingRepository;
+
+    @Override
+    public DigitalKey createKey(Long bookingId, DigitalKey digitalKey) {
+        RoomBooking booking = roomBookingRepository.findById(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id: " + bookingId));
         
-//         return keyRepository.save(newKey);
-//     }
+        digitalKey.setBooking(booking);
+        return digitalKeyRepository.save(digitalKey);
+    }
 
-//     @Override
-//     public DigitalKey getKeyById(Long id) {
-//         return keyRepository.findById(id)
-//                 .orElseThrow(() -> new ResourceNotFoundException("Digital Key not found"));
-//     }
+    @Override
+    public DigitalKey getKeyById(Long id) {
+        return digitalKeyRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("DigitalKey not found with id: " + id));
+    }
 
-//     @Override
-//     public DigitalKey getActiveKeyForBooking(Long bookingId) {
-//         return keyRepository.findByBookingIdAndIsActiveTrue(bookingId);
-//     }
+    @Override
+    public List<DigitalKey> getAllKeys() {
+        return digitalKeyRepository.findAll();
+    }
 
-//     @Override
-//     public List<DigitalKey> getKeysForGuest(Long guestId) {
-//         return keyRepository.findByBooking_GuestId(guestId);
-//     }
-// }
+    @Override
+    public void deleteKey(Long id) {
+        DigitalKey key = getKeyById(id);
+        digitalKeyRepository.delete(key);
+    }
+}
