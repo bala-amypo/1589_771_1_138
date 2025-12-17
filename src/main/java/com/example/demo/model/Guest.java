@@ -1,6 +1,10 @@
 package com.example.demo.model;
-import jakarta.persistence.*;
-import java.sql.LocalDateTime;
+
+import jakarta.persistence.*; // Fixes @Entity, @Id, etc.
+import java.time.LocalDateTime; // Fixes LocalDateTime error
+
+@Entity
+public class Guest { ... }
 @Entity
 public class Guest {
     @Id

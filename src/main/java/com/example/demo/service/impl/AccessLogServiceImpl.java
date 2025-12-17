@@ -3,6 +3,8 @@ package com.example.demo.service.impl;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalDateTime;
+import com.example.demo.repository.AccessLogRepository;
+import com.example.demo.model.AccessLog;
 import java.util.List;
 
 @Service
