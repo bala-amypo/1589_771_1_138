@@ -1,6 +1,6 @@
 package com.example.demo.model;
 
-import java.sql.LocalDateTime;
+import java.time.LocalDateTime;
 import jakarta.persistence.*;
 @Entity
 public class DigitalKey {
