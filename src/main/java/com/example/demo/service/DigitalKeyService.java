@@ -1,6 +1,6 @@
 package com.example.demo.service;
 import java.util.*;
-public class DigitalKeyService {
+public interface DigitalKeyService {
     DigitalKey generateKey(Long bookingId);
     DigitalKey getKeyById(Long id);
     DigitalKey getActiveKeyForBooking(Long bookingId);
