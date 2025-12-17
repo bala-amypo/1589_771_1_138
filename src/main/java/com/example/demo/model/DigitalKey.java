@@ -61,7 +61,7 @@ public class DigitalKey {
     @PreUpdate
     private void validateDates(){
         if(expiresAt.isBefore(issuedAt)){
-            throw new IllegalStateException("Expiration data must be after or equal to the issued date.")
+            throw new IllegalStateException("Expiration data must be after or equal to the issued date.");
         }
     }
 }
