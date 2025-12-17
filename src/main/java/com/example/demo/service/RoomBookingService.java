@@ -1,6 +1,6 @@
 package com.example.demo.service;
 import java.util.*;
-public class RoomBookingService {
+public interface RoomBookingService {
     RoomBooking createBooking(RoomBooking booking);
     RoomBooking updateBooking(RoomBooking booking);
     RoomBooking getBookingById(Long id);
