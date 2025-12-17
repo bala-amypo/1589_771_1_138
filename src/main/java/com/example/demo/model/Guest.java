@@ -1,10 +1,9 @@
 package com.example.demo.model;
 
-import jakarta.persistence.*; // Fixes @Entity, @Id, etc.
-import java.time.LocalDateTime; // Fixes LocalDateTime error
+import jakarta.persistence.*; 
+import java.time.LocalDateTime; 
 
-@Entity
-public class Guest { ... }
+
 @Entity
 public class Guest {
     @Id
