@@ -1,25 +1,43 @@
 package com.example.demo.model;
 
-import jakarta.persistence.*; 
-import java.time.LocalDateTime; 
+import java.sql.Timestamp;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "guests")
 public class Guest {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-    
+    private Long id;
+
     @Column(nullable = false)
     private String fullName;
-    
-    @Column(unique = true, nullable = false)
+
+    @Column(nullable = false, unique = true)
     private String email;
-    
+
+    @Column(nullable = false)
     private String phoneNumber;
+
+    @Column(nullable = false)
     private Boolean verified;
+
+    @Column(nullable = false)
     private Boolean active = true;
+
     private String role;
-    private LocalDateTime createdAt;
+
+    @Column(nullable = false, updatable = false)
+    private Timestamp createdAt;
+
     public Guest() {}
 
     public Guest(String fullName, String email, String phoneNumber, Boolean verified, Boolean active, String role) {
@@ -32,27 +50,69 @@ public class Guest {
     }
 
     @PrePersist
-    protected void onCreate(){
-        this.createdAt = LocalDateTime.now();
-        if(this.active == null){
-            this.active = true;
-        }
+    protected void onCreate() {
+        this.createdAt = new Timestamp(System.currentTimeMillis());
     }
-    public LocalDateTime getCreatedAt() {
+
+    // Getters and Setters
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public Boolean getVerified() {
+        return verified;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public Timestamp getCreatedAt() {
         return createdAt;
     }
-    public long getId() { return id; }
-    public void setId(long id) { this.id = id; }
-    public String getFullName() { return fullName; }
-    public void setFullName(String fullName) { this.fullName = fullName; }
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-    public String getPhoneNumber() { return phoneNumber; }
-    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
-    public Boolean getVerified() { return verified; }
-    public void setVerified(Boolean verified) { this.verified = verified; }
-    public Boolean getActive() { return active; }
-    public void setActive(Boolean active) { this.active = active; }
-    public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void setVerified(Boolean verified) {
+        this.verified = verified;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 }
