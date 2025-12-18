@@ -15,31 +15,26 @@ public class GuestController {
     @Autowired
     private GuestService guestService;
 
-    // POST / - Create guest
     @PostMapping
     public ResponseEntity<Guest> createGuest(@RequestBody Guest guest) {
         return ResponseEntity.ok(guestService.createGuest(guest));
     }
 
-    // PUT /{id} - Update guest
     @PutMapping("/{id}")
     public ResponseEntity<Guest> updateGuest(@PathVariable Long id, @RequestBody Guest guest) {
         return ResponseEntity.ok(guestService.updateGuest(id, guest));
     }
 
-    // GET /{id} - Get guest
     @GetMapping("/{id}")
     public ResponseEntity<Guest> getGuestById(@PathVariable Long id) {
         return ResponseEntity.ok(guestService.getGuestById(id));
     }
 
-    // GET / - List all
     @GetMapping
     public ResponseEntity<List<Guest>> getAllGuests() {
         return ResponseEntity.ok(guestService.getAllGuests());
     }
 
-    // PUT /{id}/deactivate - Deactivate
     @PutMapping("/{id}/deactivate")
     public ResponseEntity<Void> deactivateGuest(@PathVariable Long id) {
         guestService.deactivateGuest(id);
