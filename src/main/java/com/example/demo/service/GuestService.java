@@ -2,10 +2,11 @@ package com.example.demo.service;
 
 import com.example.demo.model.Guest;
 import java.util.List;
-
 public interface GuestService {
-    Guest saveGuest(Guest guest);
+    Guest createGuest(Guest guest); 
+    Guest updateGuest(Long id, Guest guest); 
     Guest getGuestById(Long id);
     List<Guest> getAllGuests();
+    void deactivateGuest(Long id); 
     void deleteGuest(Long id);
 }

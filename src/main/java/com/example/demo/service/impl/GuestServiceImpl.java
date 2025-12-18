@@ -16,7 +16,8 @@ public class GuestServiceImpl implements GuestService {
     private GuestRepository guestRepository;
 
     @Override
-    public Guest saveGuest(Guest guest) {
+    public Guest createGuest(Guest guest) {
+        // Using createGuest to match the Controller's call
         return guestRepository.save(guest);
     }
 
@@ -29,6 +30,22 @@ public class GuestServiceImpl implements GuestService {
     @Override
     public List<Guest> getAllGuests() {
         return guestRepository.findAll();
+    }
+
+    @Override
+    public Guest updateGuest(Long id, Guest guestDetails) {
+        Guest guest = getGuestById(id);
+        guest.setName(guestDetails.getName());
+        guest.setEmail(guestDetails.getEmail());
+        // guest.setPhoneNumber(guestDetails.getPhoneNumber()); 
+
+        return guestRepository.save(guest);
+    }
+
+    @Override
+    public void deactivateGuest(Long id) {
+        Guest guest = getGuestById(id);
+        guestRepository.save(guest); 
     }
 
     @Override
