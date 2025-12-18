@@ -17,7 +17,6 @@ public class GuestServiceImpl implements GuestService {
 
     @Override
     public Guest createGuest(Guest guest) {
-        // Using createGuest to match the Controller's call
         return guestRepository.save(guest);
     }
 
@@ -35,9 +34,14 @@ public class GuestServiceImpl implements GuestService {
     @Override
     public Guest updateGuest(Long id, Guest guestDetails) {
         Guest guest = getGuestById(id);
-        guest.setName(guestDetails.getName());
+        
+        // Using the correct field names from your Guest model
+        guest.setFullName(guestDetails.getFullName());
         guest.setEmail(guestDetails.getEmail());
-        // guest.setPhoneNumber(guestDetails.getPhoneNumber()); 
+        guest.setPhoneNumber(guestDetails.getPhoneNumber());
+        guest.setVerified(guestDetails.getVerified());
+        guest.setRole(guestDetails.getRole());
+        // We usually don't update 'createdAt' as it's handled by @PrePersist
 
         return guestRepository.save(guest);
     }
@@ -45,7 +49,9 @@ public class GuestServiceImpl implements GuestService {
     @Override
     public void deactivateGuest(Long id) {
         Guest guest = getGuestById(id);
-        guestRepository.save(guest); 
+        // Using the 'active' field from your model
+        guest.setActive(false); 
+        guestRepository.save(guest);
     }
 
     @Override
