@@ -1,44 +1,52 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.model.KeyShareRequest;
+import com.example.demo.model.DigitalKey;
+import com.example.demo.model.Guest;
 import com.example.demo.repository.KeyShareRequestRepository;
+import com.example.demo.repository.DigitalKeyRepository;
+import com.example.demo.repository.GuestRepository;
 import com.example.demo.service.KeyShareRequestService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.http.HttpStatus;
-
 import java.util.List;
 
 @Service
 public class KeyShareRequestServiceImpl implements KeyShareRequestService {
 
-    @Autowired
-    private KeyShareRequestRepository repository;
+    private final KeyShareRequestRepository repository;
+    private final DigitalKeyRepository keyRepo;
+    private final GuestRepository guestRepo;
+
+    public KeyShareRequestServiceImpl(KeyShareRequestRepository repository, 
+                                     DigitalKeyRepository keyRepo, 
+                                     GuestRepository guestRepo) {
+        this.repository = repository;
+        this.keyRepo = keyRepo;
+        this.guestRepo = guestRepo;
+    }
 
     @Override
     public KeyShareRequest createShareRequest(KeyShareRequest request) {
-        // Validation logic as required by documentation
-        if (request.getShareStart() == null || request.getShareEnd() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Dates are required");
-        }
-        
-        // Ensure chronological order of dates
-        if (request.getShareStart().after(request.getShareEnd())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start date cannot be after end date");
-        }
+        DigitalKey key = keyRepo.findById(request.getDigitalKey().getId())
+            .orElseThrow(() -> new ResourceNotFoundException("Key not found"));
+        Guest sender = guestRepo.findById(request.getSharedBy().getId())
+            .orElseThrow(() -> new ResourceNotFoundException("Sender not found"));
+        Guest receiver = guestRepo.findById(request.getSharedWith().getId())
+            .orElseThrow(() -> new ResourceNotFoundException("Receiver not found"));
 
-        // Validate that both users exist in the request
-        if (request.getSharedBy() == null || request.getSharedWith() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "SharedBy and SharedWith guests are required");
-        }
-        // System.out.println("in imple: "+ request.createdAt());
+        request.setDigitalKey(key);
+        request.setSharedBy(sender);
+        request.setSharedWith(receiver);
+        if (request.getStatus() == null) request.setStatus("PENDING");
+
         return repository.save(request);
     }
 
     @Override
-    public KeyShareRequest updateStatus(Long requestId, String status) {
-        KeyShareRequest request = getRequestById(requestId);
+    public KeyShareRequest updateStatus(Long id, String status) {
+        KeyShareRequest request = repository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Request not found"));
         request.setStatus(status);
         return repository.save(request);
     }
@@ -46,18 +54,16 @@ public class KeyShareRequestServiceImpl implements KeyShareRequestService {
     @Override
     public KeyShareRequest getRequestById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Request not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Request not found"));
     }
 
     @Override
     public List<KeyShareRequest> getSharedBy(Long guestId) {
-        // Matches the updated repository method name
         return repository.findBySharedById(guestId);
     }
 
     @Override
     public List<KeyShareRequest> getSharedWith(Long guestId) {
-        // Matches the updated repository method name
         return repository.findBySharedWithId(guestId);
     }
 }
