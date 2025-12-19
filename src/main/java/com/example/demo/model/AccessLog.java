@@ -1,8 +1,8 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.sql.Timestamp;
+import java.time.Instant;
 
 @Entity
 @Table(name = "access_logs")
@@ -10,27 +10,36 @@ public class AccessLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; // Long, PK
 
     @ManyToOne
-    @JoinColumn(name = "key_id", nullable = false)
-    @JsonIgnoreProperties({"booking", "active"}) // Simplifies the key info in the log
-    private DigitalKey digitalKey;
+    @JoinColumn(name = "digital_key_id", nullable = false)
+    private DigitalKey digitalKey; // ManyToOne DigitalKey
 
     @ManyToOne
     @JoinColumn(name = "guest_id", nullable = false)
-    @JsonIgnoreProperties("bookings")
-    private Guest guest;
+    private Guest guest; // ManyToOne Guest
 
     @Column(nullable = false)
-    private Timestamp accessTime;
+    private Timestamp accessTime; // Timestamp
 
     @Column(nullable = false)
-    private String result; // e.g., SUCCESS, FAILURE
+    private String result; // SUCCESS / DENIED
 
-    private String reason; // e.g., Valid Key, Expired Key, Wrong Room
+    private String reason; // String
 
     public AccessLog() {}
+
+    /**
+     * Requirement: accessTime cannot be in the future.
+     */
+    @PrePersist
+    @PreUpdate
+    private void validateAccessTime() {
+        if (this.accessTime != null && this.accessTime.after(Timestamp.from(Instant.now()))) {
+            throw new IllegalArgumentException("Access time cannot be in the future."); //
+        }
+    }
 
     // Getters and Setters
     public Long getId() { return id; }

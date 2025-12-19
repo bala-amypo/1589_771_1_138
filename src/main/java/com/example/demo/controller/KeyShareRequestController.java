@@ -1,72 +1,68 @@
-package com.example.demo.model;
+package com.example.demo.controller;
 
-import jakarta.persistence.*;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.sql.Timestamp;
+import com.example.demo.model.KeyShareRequest;
+import com.example.demo.service.KeyShareRequestService;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@Entity
-@Table(name = "key_shares")
-public class KeyShareRequest {
+import java.util.List;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@RestController
+@RequestMapping("/api/key-share")
+@Tag(name = "Key Share Management", description = "Endpoints for managing key share requests")
+public class KeyShareRequestController {
 
-    @ManyToOne
-    @JoinColumn(name = "key_id", nullable = false)
-    @JsonIgnoreProperties("booking")
-    private DigitalKey digitalKey;
+    private final KeyShareRequestService keyShareRequestService;
 
-    @ManyToOne
-    @JoinColumn(name = "shared_by_id", nullable = false)
-    @JsonIgnoreProperties("bookings")
-    private Guest sharedBy;
-
-    @ManyToOne
-    @JoinColumn(name = "shared_with_id", nullable = false)
-    @JsonIgnoreProperties("bookings")
-    private Guest sharedWith;
-
-    @Column(nullable = false)
-    private Timestamp shareStart;
-
-    @Column(nullable = false)
-    private Timestamp shareEnd;
-
-    @Column(nullable = false)
-    private String status; // e.g., PENDING, ACCEPTED, REVOKED
-
-    @Column(nullable = false, updatable = false)
-    private Timestamp createdAt;
-
-    public KeyShareRequest() {}
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = new Timestamp(System.currentTimeMillis());
+    public KeyShareRequestController(KeyShareRequestService keyShareRequestService) {
+        this.keyShareRequestService = keyShareRequestService;
     }
 
-    // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    @PostMapping
+    public ResponseEntity<KeyShareRequest> createShareRequest(
+            @RequestBody KeyShareRequest request) {
+        // System.out.println("in imple: "+ request.createdAt());
 
-    public DigitalKey getDigitalKey() { return digitalKey; }
-    public void setDigitalKey(DigitalKey digitalKey) { this.digitalKey = digitalKey; }
+        KeyShareRequest created =
+                keyShareRequestService.createShareRequest(request);
 
-    public Guest getSharedBy() { return sharedBy; }
-    public void setSharedBy(Guest sharedBy) { this.sharedBy = sharedBy; }
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
+    }
 
-    public Guest getSharedWith() { return sharedWith; }
-    public void setSharedWith(Guest sharedWith) { this.sharedWith = sharedWith; }
+    @PutMapping("/{id}/status")
+    public ResponseEntity<KeyShareRequest> updateStatus(
+            @PathVariable Long id,
+            @RequestParam String status) {
 
-    public Timestamp getShareStart() { return shareStart; }
-    public void setShareStart(Timestamp shareStart) { this.shareStart = shareStart; }
+        return ResponseEntity.ok(
+                keyShareRequestService.updateStatus(id, status)
+        );
+    }
 
-    public Timestamp getShareEnd() { return shareEnd; }
-    public void setShareEnd(Timestamp shareEnd) { this.shareEnd = shareEnd; }
+    @GetMapping("/{id}")
+    public ResponseEntity<KeyShareRequest> getRequestById(
+            @PathVariable Long id) {
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+        return ResponseEntity.ok(
+                keyShareRequestService.getRequestById(id)
+        );
+    }
+    @GetMapping("/shared-by/{guestId}")
+    public ResponseEntity<List<KeyShareRequest>> getSharedBy(
+            @PathVariable Long guestId) {
 
-    public Timestamp getCreatedAt() { return createdAt; }
+        return ResponseEntity.ok(
+                keyShareRequestService.getSharedBy(guestId)
+        );
+    }
+    @GetMapping("/shared-with/{guestId}")
+    public ResponseEntity<List<KeyShareRequest>> getSharedWith(
+            @PathVariable Long guestId) {
+
+        return ResponseEntity.ok(
+                keyShareRequestService.getSharedWith(guestId)
+        );
+    }
 }
