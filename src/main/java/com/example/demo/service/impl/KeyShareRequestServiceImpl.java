@@ -66,4 +66,4 @@ public class KeyShareRequestServiceImpl implements KeyShareRequestService {
     public List<KeyShareRequest> getSharedWith(Long guestId) {
         return repository.findBySharedWithId(guestId);
     }
-}
+}     
