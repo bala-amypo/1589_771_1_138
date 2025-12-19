@@ -12,19 +12,19 @@ public class KeyShareRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "digital_key_id", nullable = false)
-    @JsonIgnoreProperties({"booking", "active"}) 
+    @JsonIgnoreProperties({"booking", "active", "keyValue"}) 
     private DigitalKey digitalKey;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "shared_by_id", nullable = false)
-    @JsonIgnoreProperties("bookings") 
+    @JsonIgnoreProperties({"bookings", "role", "email"}) 
     private Guest sharedBy;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "shared_with_id", nullable = false)
-    @JsonIgnoreProperties("bookings") 
+    @JsonIgnoreProperties({"bookings", "role", "email"}) 
     private Guest sharedWith;
 
     @Column(nullable = false)
@@ -50,17 +50,24 @@ public class KeyShareRequest {
     // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+
     public DigitalKey getDigitalKey() { return digitalKey; }
     public void setDigitalKey(DigitalKey digitalKey) { this.digitalKey = digitalKey; }
+
     public Guest getSharedBy() { return sharedBy; }
     public void setSharedBy(Guest sharedBy) { this.sharedBy = sharedBy; }
+
     public Guest getSharedWith() { return sharedWith; }
     public void setSharedWith(Guest sharedWith) { this.sharedWith = sharedWith; }
+
     public Timestamp getShareStart() { return shareStart; }
     public void setShareStart(Timestamp shareStart) { this.shareStart = shareStart; }
+
     public Timestamp getShareEnd() { return shareEnd; }
     public void setShareEnd(Timestamp shareEnd) { this.shareEnd = shareEnd; }
+
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
     public Timestamp getCreatedAt() { return createdAt; }
 }

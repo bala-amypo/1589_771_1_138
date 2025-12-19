@@ -7,6 +7,9 @@ import java.util.List;
 
 @Repository
 public interface KeyShareRequestRepository extends JpaRepository<KeyShareRequest, Long> {
-    List<KeyShareRequest> findBySharedById(Long guestId);
-    List<KeyShareRequest> findBySharedWithId(Long guestId);
+    
+    // Uses underscore to navigate to the 'id' field inside the Guest object
+    List<KeyShareRequest> findBySharedBy_Id(Long guestId);
+    
+    List<KeyShareRequest> findBySharedWith_Id(Long guestId);
 }
