@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.sql.Timestamp;
 
 @Entity
@@ -13,6 +14,7 @@ public class DigitalKey {
 
     @ManyToOne
     @JoinColumn(name = "booking_id", nullable = false)
+    @JsonIgnoreProperties({"roommates", "guest"}) // Simplifies the JSON response
     private RoomBooking booking;
 
     @Column(nullable = false, unique = true)

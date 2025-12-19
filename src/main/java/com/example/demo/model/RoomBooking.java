@@ -1,18 +1,9 @@
 package com.example.demo.model;
 
+import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.LocalDate;
 import java.util.List;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "room_bookings")
@@ -24,6 +15,7 @@ public class RoomBooking {
 
     @ManyToOne
     @JoinColumn(name = "guest_id", nullable = false)
+    @JsonIgnoreProperties("bookings") // Prevents guest -> booking -> guest loop
     private Guest guest;
 
     @Column(nullable = false)
@@ -44,10 +36,12 @@ public class RoomBooking {
         joinColumns = @JoinColumn(name = "booking_id"),
         inverseJoinColumns = @JoinColumn(name = "guest_id")
     )
+    @JsonIgnoreProperties("bookings")
     private List<Guest> roommates;
 
     public RoomBooking() {}
 
+    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
