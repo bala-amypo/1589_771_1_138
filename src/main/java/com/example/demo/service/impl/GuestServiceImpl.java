@@ -17,7 +17,22 @@ public class GuestServiceImpl implements GuestService {
 
     @Override
     public Guest createGuest(Guest guest) {
+        // In a real JWT app, you would encode the password here before saving
         return guestRepository.save(guest);
+    }
+
+    @Override
+    public Guest loginGuest(String email, String password) {
+        // Find guest by email (requires findByEmail in GuestRepository)
+        Guest guest = guestRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Guest not found with email: " + email));
+
+        // Check if password matches
+        if (guest.getPassword().equals(password)) {
+            return guest;
+        } else {
+            throw new RuntimeException("Invalid email or password");
+        }
     }
 
     @Override
@@ -35,13 +50,12 @@ public class GuestServiceImpl implements GuestService {
     public Guest updateGuest(Long id, Guest guestDetails) {
         Guest guest = getGuestById(id);
         
-        // Using the correct field names from your Guest model
         guest.setFullName(guestDetails.getFullName());
         guest.setEmail(guestDetails.getEmail());
         guest.setPhoneNumber(guestDetails.getPhoneNumber());
         guest.setVerified(guestDetails.getVerified());
         guest.setRole(guestDetails.getRole());
-        // We usually don't update 'createdAt' as it's handled by @PrePersist
+        guest.setActive(guestDetails.getActive());
 
         return guestRepository.save(guest);
     }
@@ -49,7 +63,6 @@ public class GuestServiceImpl implements GuestService {
     @Override
     public void deactivateGuest(Long id) {
         Guest guest = getGuestById(id);
-        // Using the 'active' field from your model
         guest.setActive(false); 
         guestRepository.save(guest);
     }
