@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -10,53 +11,44 @@ public class AccessLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // Long, PK
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "digital_key_id", nullable = false)
-    private DigitalKey digitalKey; // ManyToOne DigitalKey
+    @JsonIgnoreProperties({"booking", "active"}) // Prevents loop: Key -> Booking -> Guest...
+    private DigitalKey digitalKey;
 
     @ManyToOne
     @JoinColumn(name = "guest_id", nullable = false)
-    private Guest guest; // ManyToOne Guest
+    @JsonIgnoreProperties("bookings") // Prevents loop: Guest -> Bookings -> Key...
+    private Guest guest;
 
     @Column(nullable = false)
-    private Timestamp accessTime; // Timestamp
+    private Timestamp accessTime;
 
     @Column(nullable = false)
-    private String result; // SUCCESS / DENIED
+    private String result; 
 
-    private String reason; // String
+    private String reason;
 
-    public AccessLog() {}
-
-    /**
-     * Requirement: accessTime cannot be in the future.
-     */
     @PrePersist
-    @PreUpdate
-    private void validateAccessTime() {
-        if (this.accessTime != null && this.accessTime.after(Timestamp.from(Instant.now()))) {
-            throw new IllegalArgumentException("Access time cannot be in the future."); //
+    protected void onCreate() {
+        if (this.accessTime == null) {
+            this.accessTime = Timestamp.from(Instant.now());
         }
     }
 
     // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
-
     public DigitalKey getDigitalKey() { return digitalKey; }
     public void setDigitalKey(DigitalKey digitalKey) { this.digitalKey = digitalKey; }
-
     public Guest getGuest() { return guest; }
     public void setGuest(Guest guest) { this.guest = guest; }
-
     public Timestamp getAccessTime() { return accessTime; }
     public void setAccessTime(Timestamp accessTime) { this.accessTime = accessTime; }
-
     public String getResult() { return result; }
     public void setResult(String result) { this.result = result; }
-
     public String getReason() { return reason; }
     public void setReason(String reason) { this.reason = reason; }
 }

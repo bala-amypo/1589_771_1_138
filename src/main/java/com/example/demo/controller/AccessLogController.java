@@ -16,7 +16,13 @@ public class AccessLogController {
 
     @PostMapping
     public ResponseEntity<AccessLog> recordEntry(@RequestBody AccessLog log) {
+        // Returns 200 OK with the saved log
         return ResponseEntity.ok(accessLogService.createLog(log));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<AccessLog>> getAllLogs() {
+        return ResponseEntity.ok(accessLogService.getAllLogs());
     }
 
     @GetMapping("/key/{keyId}")
