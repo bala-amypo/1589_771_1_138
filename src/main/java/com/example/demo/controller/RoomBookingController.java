@@ -15,35 +15,30 @@ public class RoomBookingController {
     @Autowired
     private RoomBookingService bookingService;
 
-    // POST / – Create booking
     @PostMapping
     public ResponseEntity<RoomBooking> createBooking(@RequestBody RoomBooking booking) {
         RoomBooking created = bookingService.createBooking(booking);
         return ResponseEntity.ok(created);
     }
 
-    // PUT /{id} – Update booking
     @PutMapping("/{id}")
     public ResponseEntity<RoomBooking> updateBooking(@PathVariable Long id, @RequestBody RoomBooking booking) {
         RoomBooking updated = bookingService.updateBooking(id, booking);
         return ResponseEntity.ok(updated);
     }
 
-    // GET /{id} – Get booking
     @GetMapping("/{id}")
     public ResponseEntity<RoomBooking> getBooking(@PathVariable Long id) {
         RoomBooking booking = bookingService.getBookingById(id);
         return ResponseEntity.ok(booking);
     }
 
-    // GET /guest/{guestId} – List for guest
     @GetMapping("/guest/{guestId}")
     public ResponseEntity<List<RoomBooking>> getBookingsForGuest(@PathVariable Long guestId) {
         List<RoomBooking> bookings = bookingService.getBookingsForGuest(guestId);
         return ResponseEntity.ok(bookings);
     }
 
-    // PUT /{id}/deactivate – Deactivate
     @PutMapping("/{id}/deactivate")
     public ResponseEntity<Void> deactivateBooking(@PathVariable Long id) {
         bookingService.deactivateBooking(id);
