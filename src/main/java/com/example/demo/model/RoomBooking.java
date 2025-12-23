@@ -15,7 +15,7 @@ public class RoomBooking {
 
     @ManyToOne
     @JoinColumn(name = "guest_id", nullable = false)
-    @JsonIgnoreProperties("bookings") // Prevents guest -> booking -> guest loop
+    @JsonIgnoreProperties("bookings") 
     private Guest guest;
 
     @Column(nullable = false)
@@ -41,7 +41,6 @@ public class RoomBooking {
 
     public RoomBooking() {}
 
-    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

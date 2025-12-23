@@ -18,7 +18,6 @@ public class KeyShareRequestServiceImpl implements KeyShareRequestService {
     private final DigitalKeyRepository keyRepo;
     private final GuestRepository guestRepo;
 
-    // Constructor Injection
     public KeyShareRequestServiceImpl(KeyShareRequestRepository repository, 
                                      DigitalKeyRepository keyRepo, 
                                      GuestRepository guestRepo) {
@@ -30,11 +29,10 @@ public class KeyShareRequestServiceImpl implements KeyShareRequestService {
     @Override
     @Transactional
     public KeyShareRequest createShareRequest(KeyShareRequest request) {
-        // 1. Fetch and Validate Digital Key
         DigitalKey key = keyRepo.findById(request.getDigitalKey().getId())
             .orElseThrow(() -> new RuntimeException("Digital Key ID " + request.getDigitalKey().getId() + " not found"));
 
-        // 2. Fetch and Validate Sender
+        // 2. Fetch and  Sender
         Guest sender = guestRepo.findById(request.getSharedBy().getId())
             .orElseThrow(() -> new RuntimeException("Sender Guest ID " + request.getSharedBy().getId() + " not found"));
 

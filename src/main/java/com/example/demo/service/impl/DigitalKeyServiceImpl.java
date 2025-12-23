@@ -30,7 +30,6 @@ public class DigitalKeyServiceImpl implements DigitalKeyService {
         RoomBooking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
-        // Requirement: Throw IllegalStateException if booking inactive
         if (!booking.getActive()) {
             throw new IllegalStateException("Cannot generate a key for an inactive booking.");
         }
@@ -39,7 +38,6 @@ public class DigitalKeyServiceImpl implements DigitalKeyService {
         key.setBooking(booking);
         key.setKeyValue(UUID.randomUUID().toString());
         key.setIssuedAt(Timestamp.from(Instant.now()));
-        // Setting default expiry to 24 hours from now
         key.setExpiresAt(Timestamp.from(Instant.now().plusSeconds(86400))); 
         key.setActive(true);
 

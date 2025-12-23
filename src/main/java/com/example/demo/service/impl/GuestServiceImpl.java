@@ -17,17 +17,14 @@ public class GuestServiceImpl implements GuestService {
 
     @Override
     public Guest createGuest(Guest guest) {
-        // In a real JWT app, you would encode the password here before saving
         return guestRepository.save(guest);
     }
 
     @Override
     public Guest loginGuest(String email, String password) {
-        // Find guest by email (requires findByEmail in GuestRepository)
         Guest guest = guestRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Guest not found with email: " + email));
 
-        // Check if password matches
         if (guest.getPassword().equals(password)) {
             return guest;
         } else {

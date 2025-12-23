@@ -17,7 +17,6 @@ public class AccessLogServiceImpl implements AccessLogService {
     @Override
     @Transactional
     public AccessLog createLog(AccessLog log) {
-        // You can add business logic here (e.g., checking if the key is active)
         return accessLogRepository.save(log);
     }
 
