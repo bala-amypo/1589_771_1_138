@@ -32,20 +32,16 @@ public class KeyShareRequestServiceImpl implements KeyShareRequestService {
         DigitalKey key = keyRepo.findById(request.getDigitalKey().getId())
             .orElseThrow(() -> new RuntimeException("Digital Key ID " + request.getDigitalKey().getId() + " not found"));
 
-        // 2. Fetch and  Sender
         Guest sender = guestRepo.findById(request.getSharedBy().getId())
             .orElseThrow(() -> new RuntimeException("Sender Guest ID " + request.getSharedBy().getId() + " not found"));
 
-        // 3. Fetch and Validate Receiver
         Guest receiver = guestRepo.findById(request.getSharedWith().getId())
             .orElseThrow(() -> new RuntimeException("Receiver Guest ID " + request.getSharedWith().getId() + " not found"));
 
-        // 4. Map the full objects back to the request
         request.setDigitalKey(key);
         request.setSharedBy(sender);
         request.setSharedWith(receiver);
 
-        // 5. Save and return (JSON annotations in Entity handle the response)
         return repository.save(request);
     }
 

@@ -59,9 +59,6 @@ public class RoomBookingServiceImpl implements RoomBookingService {
         bookingRepository.save(booking);
     }
 
-    /**
-     * Internal helper to validate booking dates.
-     */
     private void validateDates(LocalDate checkIn, LocalDate checkOut) {
         if (checkIn == null || checkOut == null) {
             throw new IllegalArgumentException("Dates cannot be null.");

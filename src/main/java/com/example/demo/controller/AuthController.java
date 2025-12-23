@@ -20,19 +20,16 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<Guest> register(@RequestBody Guest guest) {
-        // Reuses the createGuest logic from your GuestService
         return ResponseEntity.ok(guestService.createGuest(guest));
     }
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody Map<String, String> loginRequest) {
-        // Uses the loginGuest method we added to your GuestService
         Guest guest = guestService.loginGuest(
             loginRequest.get("email"), 
             loginRequest.get("password")
         );
         
-        // Prepare response with a dummy token as you requested to omit security files for now
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Login successful");
         response.put("guestId", guest.getId());
