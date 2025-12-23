@@ -20,7 +20,7 @@ public class Guest {
     private String password; // This was missing!
 
     private String phoneNumber;
-    private Boolean verified = false;
+    private Boolean verified = true;
     private String role = "GUEST"; // Default role
     private Boolean active = true;
 
