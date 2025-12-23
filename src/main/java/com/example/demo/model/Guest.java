@@ -17,11 +17,11 @@ public class Guest {
     private String email;
 
     @Column(nullable = false)
-    private String password; // This was missing!
+    private String password; 
 
     private String phoneNumber;
     private Boolean verified = true;
-    private String role = "GUEST"; // Default role
+    private String role = "GUEST"; 
     private Boolean active = true;
 
     @Column(updatable = false)
@@ -32,7 +32,6 @@ public class Guest {
         createdAt = LocalDateTime.now();
     }
 
-    // --- Getters and Setters ---
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -43,7 +42,6 @@ public class Guest {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
-    // This method is what the compiler was looking for
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
 

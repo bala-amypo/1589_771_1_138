@@ -15,12 +15,12 @@ public class AccessLog {
 
     @ManyToOne
     @JoinColumn(name = "digital_key_id", nullable = false)
-    @JsonIgnoreProperties({"booking", "active"}) // Prevents loop: Key -> Booking -> Guest...
+    @JsonIgnoreProperties({"booking", "active"}) 
     private DigitalKey digitalKey;
 
     @ManyToOne
     @JoinColumn(name = "guest_id", nullable = false)
-    @JsonIgnoreProperties("bookings") // Prevents loop: Guest -> Bookings -> Key...
+    @JsonIgnoreProperties("bookings") 
     private Guest guest;
 
     @Column(nullable = false)
@@ -38,7 +38,6 @@ public class AccessLog {
         }
     }
 
-    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public DigitalKey getDigitalKey() { return digitalKey; }
