@@ -12,7 +12,7 @@ import java.util.Date;
 public class JwtTokenProvider {
 
     private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    private final long EXPIRATION = 3600000;
+    private static final long EXPIRATION = 3600000;
 
     public String generateToken(Authentication authentication) {
 
@@ -26,7 +26,7 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .setSubject(email)
                 .claim("role", role)
-                .claim("userId", email.hashCode()) // non-null
+                .claim("userId", email.hashCode())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
                 .signWith(key)
