@@ -15,10 +15,9 @@ public class GuestServiceImpl implements GuestService {
     private final GuestRepository guestRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public GuestServiceImpl(
-            GuestRepository guestRepository,
-            PasswordEncoder passwordEncoder) {
-
+    // ✅ REQUIRED BY TESTS
+    public GuestServiceImpl(GuestRepository guestRepository,
+                            PasswordEncoder passwordEncoder) {
         this.guestRepository = guestRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -55,6 +54,13 @@ public class GuestServiceImpl implements GuestService {
         return guestRepository.save(existing);
     }
 
+    @Override
+    public void deactivateGuest(Long id) {
+        Guest guest = getGuestById(id);
+        guest.setActive(false);
+        guestRepository.save(guest);
+    }
+
     // ✅ REQUIRED BY INTERFACE
     @Override
     public void deleteGuest(Long id) {
@@ -62,10 +68,18 @@ public class GuestServiceImpl implements GuestService {
         guestRepository.delete(guest);
     }
 
+    // ✅ REQUIRED BY INTERFACE (LAST MISSING METHOD)
     @Override
-    public void deactivateGuest(Long id) {
-        Guest guest = getGuestById(id);
-        guest.setActive(false);
-        guestRepository.save(guest);
+    public Guest loginGuest(String email, String password) {
+
+        Guest guest = guestRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Guest not found: " + email));
+
+        if (!passwordEncoder.matches(password, guest.getPassword())) {
+            throw new IllegalArgumentException("Invalid credentials");
+        }
+
+        return guest;
     }
 }
