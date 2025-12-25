@@ -2,13 +2,12 @@ package com.example.demo.controller;
 
 import com.example.demo.model.KeyShareRequest;
 import com.example.demo.service.KeyShareRequestService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/key-share")
+@RequestMapping("/api/key-share-requests")
 public class KeyShareRequestController {
 
     private final KeyShareRequestService keyShareRequestService;
@@ -17,18 +16,27 @@ public class KeyShareRequestController {
         this.keyShareRequestService = keyShareRequestService;
     }
 
+    // Create a key share request
     @PostMapping
-    public ResponseEntity<KeyShareRequest> createShareRequest(@RequestBody KeyShareRequest request) {
-        return new ResponseEntity<>(keyShareRequestService.createShareRequest(request), HttpStatus.CREATED);
+    public KeyShareRequest createShareRequest(@RequestBody KeyShareRequest request) {
+        return keyShareRequestService.createShareRequest(request);
     }
 
-    @PutMapping("/{id}/status")
-    public ResponseEntity<KeyShareRequest> updateStatus(@PathVariable Long id, @RequestParam String status) {
-        return ResponseEntity.ok(keyShareRequestService.updateStatus(id, status));
+    // Get a share request by ID
+    @GetMapping("/{id}")
+    public KeyShareRequest getRequestById(@PathVariable Long id) {
+        return keyShareRequestService.getRequestById(id);
     }
 
+    // Get all requests shared by a guest
+    @GetMapping("/shared-by/{guestId}")
+    public List<KeyShareRequest> getSharedBy(@PathVariable Long guestId) {
+        return keyShareRequestService.getSharedBy(guestId);
+    }
+
+    // Get all requests shared with a guest
     @GetMapping("/shared-with/{guestId}")
-    public ResponseEntity<List<KeyShareRequest>> getSharedWith(@PathVariable Long guestId) {
-        return ResponseEntity.ok(keyShareRequestService.getSharedWith(guestId));
+    public List<KeyShareRequest> getSharedWith(@PathVariable Long guestId) {
+        return keyShareRequestService.getSharedWith(guestId);
     }
 }
