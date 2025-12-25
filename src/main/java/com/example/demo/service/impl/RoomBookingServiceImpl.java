@@ -13,6 +13,7 @@ public class RoomBookingServiceImpl implements RoomBookingService {
 
     private final RoomBookingRepository roomBookingRepository;
 
+    // ✅ REQUIRED BY TESTS
     public RoomBookingServiceImpl(RoomBookingRepository roomBookingRepository) {
         this.roomBookingRepository = roomBookingRepository;
     }
@@ -41,7 +42,6 @@ public class RoomBookingServiceImpl implements RoomBookingService {
         return roomBookingRepository.findByGuestId(guestId);
     }
 
-    // ✅ REQUIRED BY INTERFACE
     @Override
     public void deactivateBooking(Long id) {
         RoomBooking booking = roomBookingRepository.findById(id)
@@ -49,5 +49,13 @@ public class RoomBookingServiceImpl implements RoomBookingService {
                         new ResourceNotFoundException("Booking not found: " + id));
         booking.setActive(false);
         roomBookingRepository.save(booking);
+    }
+
+    // ✅ REQUIRED BY INTERFACE (LAST MISSING METHOD)
+    @Override
+    public RoomBooking getBookingById(Long id) {
+        return roomBookingRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Booking not found: " + id));
     }
 }
