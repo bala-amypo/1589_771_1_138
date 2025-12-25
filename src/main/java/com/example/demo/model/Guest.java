@@ -1,10 +1,15 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
-@Table(name = "guests")
+@Table(
+    name = "guest",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = "email")
+    }
+)
 public class Guest {
 
     @Id
@@ -13,25 +18,29 @@ public class Guest {
 
     private String fullName;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
-    private String password; 
+    private String password;
 
     private String phoneNumber;
-    private Boolean verified = true;
-    private String role = "GUEST"; 
+
+    private Boolean verified = false;
+
     private Boolean active = true;
 
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
+    private String role = "ROLE_USER";
+
+    private Instant createdAt;
 
     @PrePersist
     protected void onCreate() {
-        createdAt = LocalDateTime.now();
+        this.createdAt = Instant.now();
+        if (active == null) active = true;
+        if (verified == null) verified = false;
     }
 
+    /* ========= getters & setters ========= */
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -51,11 +60,11 @@ public class Guest {
     public Boolean getVerified() { return verified; }
     public void setVerified(Boolean verified) { this.verified = verified; }
 
-    public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
-
     public Boolean getActive() { return active; }
     public void setActive(Boolean active) { this.active = active; }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
+
+    public Instant getCreatedAt() { return createdAt; }
 }
