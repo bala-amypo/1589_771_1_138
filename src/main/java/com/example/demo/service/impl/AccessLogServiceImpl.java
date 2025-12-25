@@ -19,11 +19,12 @@ public class AccessLogServiceImpl implements AccessLogService {
     private final GuestRepository guestRepository;
     private final KeyShareRequestRepository keyShareRequestRepository;
 
-    // ✅ REQUIRED BY TESTS
-    public AccessLogServiceImpl(AccessLogRepository accessLogRepository,
-                                DigitalKeyRepository digitalKeyRepository,
-                                GuestRepository guestRepository,
-                                KeyShareRequestRepository keyShareRequestRepository) {
+    public AccessLogServiceImpl(
+            AccessLogRepository accessLogRepository,
+            DigitalKeyRepository digitalKeyRepository,
+            GuestRepository guestRepository,
+            KeyShareRequestRepository keyShareRequestRepository) {
+
         this.accessLogRepository = accessLogRepository;
         this.digitalKeyRepository = digitalKeyRepository;
         this.guestRepository = guestRepository;
@@ -38,18 +39,15 @@ public class AccessLogServiceImpl implements AccessLogService {
         }
 
         DigitalKey key = digitalKeyRepository.findById(log.getDigitalKey().getId())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Key not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Key not found"));
 
         Guest guest = guestRepository.findById(log.getGuest().getId())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Guest not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Guest not found"));
 
         log.setDigitalKey(key);
         log.setGuest(guest);
 
-        if (key.getActive()
-                && Instant.now().isBefore(key.getExpiresAt())) {
+        if (key.getActive() && Instant.now().isBefore(key.getExpiresAt())) {
             log.setResult("SUCCESS");
         } else {
             log.setResult("DENIED");
@@ -66,5 +64,11 @@ public class AccessLogServiceImpl implements AccessLogService {
     @Override
     public List<AccessLog> getLogsForKey(Long keyId) {
         return accessLogRepository.findByDigitalKeyId(keyId);
+    }
+
+    // ✅ REQUIRED BY INTERFACE
+    @Override
+    public List<AccessLog> getAllLogs() {
+        return accessLogRepository.findAll();
     }
 }

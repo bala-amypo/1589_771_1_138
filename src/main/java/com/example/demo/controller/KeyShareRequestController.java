@@ -16,27 +16,23 @@ public class KeyShareRequestController {
         this.keyShareRequestService = keyShareRequestService;
     }
 
-    // Create a key share request
     @PostMapping
-    public KeyShareRequest createShareRequest(@RequestBody KeyShareRequest request) {
+    public KeyShareRequest create(@RequestBody KeyShareRequest request) {
         return keyShareRequestService.createShareRequest(request);
     }
 
-    // Get a share request by ID
     @GetMapping("/{id}")
-    public KeyShareRequest getRequestById(@PathVariable Long id) {
+    public KeyShareRequest getById(@PathVariable Long id) {
         return keyShareRequestService.getRequestById(id);
     }
 
-    // Get all requests shared by a guest
     @GetMapping("/shared-by/{guestId}")
     public List<KeyShareRequest> getSharedBy(@PathVariable Long guestId) {
-        return keyShareRequestService.getSharedBy(guestId);
+        return keyShareRequestService.getRequestsSharedBy(guestId);
     }
 
-    // Get all requests shared with a guest
     @GetMapping("/shared-with/{guestId}")
     public List<KeyShareRequest> getSharedWith(@PathVariable Long guestId) {
-        return keyShareRequestService.getSharedWith(guestId);
+        return keyShareRequestService.getRequestsSharedWith(guestId);
     }
 }

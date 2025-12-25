@@ -19,9 +19,10 @@ public class DigitalKeyServiceImpl implements DigitalKeyService {
     private final DigitalKeyRepository keyRepository;
     private final RoomBookingRepository bookingRepository;
 
-    // ✅ REQUIRED BY TESTS
-    public DigitalKeyServiceImpl(DigitalKeyRepository keyRepository,
-                                 RoomBookingRepository bookingRepository) {
+    public DigitalKeyServiceImpl(
+            DigitalKeyRepository keyRepository,
+            RoomBookingRepository bookingRepository) {
+
         this.keyRepository = keyRepository;
         this.bookingRepository = bookingRepository;
     }
@@ -29,6 +30,7 @@ public class DigitalKeyServiceImpl implements DigitalKeyService {
     @Override
     @Transactional
     public DigitalKey generateKey(Long bookingId) {
+
         RoomBooking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Booking not found: " + bookingId));
@@ -45,6 +47,14 @@ public class DigitalKeyServiceImpl implements DigitalKeyService {
         key.setActive(true);
 
         return keyRepository.save(key);
+    }
+
+    // ✅ REQUIRED BY INTERFACE
+    @Override
+    public DigitalKey getKeyById(Long id) {
+        return keyRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Key not found: " + id));
     }
 
     @Override

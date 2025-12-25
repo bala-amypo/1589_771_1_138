@@ -15,9 +15,10 @@ public class GuestServiceImpl implements GuestService {
     private final GuestRepository guestRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // ✅ REQUIRED BY TESTS
-    public GuestServiceImpl(GuestRepository guestRepository,
-                            PasswordEncoder passwordEncoder) {
+    public GuestServiceImpl(
+            GuestRepository guestRepository,
+            PasswordEncoder passwordEncoder) {
+
         this.guestRepository = guestRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -52,6 +53,13 @@ public class GuestServiceImpl implements GuestService {
         existing.setActive(updated.getActive());
         existing.setRole(updated.getRole());
         return guestRepository.save(existing);
+    }
+
+    // ✅ REQUIRED BY INTERFACE
+    @Override
+    public void deleteGuest(Long id) {
+        Guest guest = getGuestById(id);
+        guestRepository.delete(guest);
     }
 
     @Override

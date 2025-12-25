@@ -13,7 +13,6 @@ public class RoomBookingServiceImpl implements RoomBookingService {
 
     private final RoomBookingRepository roomBookingRepository;
 
-    // ✅ REQUIRED BY TESTS
     public RoomBookingServiceImpl(RoomBookingRepository roomBookingRepository) {
         this.roomBookingRepository = roomBookingRepository;
     }
@@ -21,7 +20,7 @@ public class RoomBookingServiceImpl implements RoomBookingService {
     @Override
     public RoomBooking createBooking(RoomBooking booking) {
         if (booking.getCheckOutDate().isBefore(booking.getCheckInDate())) {
-            throw new IllegalArgumentException("Check-in date must be before check-out");
+            throw new IllegalArgumentException("Check-in must be before check-out");
         }
         return roomBookingRepository.save(booking);
     }
@@ -31,6 +30,7 @@ public class RoomBookingServiceImpl implements RoomBookingService {
         RoomBooking existing = roomBookingRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Booking not found: " + id));
+
         existing.setCheckInDate(booking.getCheckInDate());
         existing.setCheckOutDate(booking.getCheckOutDate());
         return roomBookingRepository.save(existing);
@@ -39,5 +39,15 @@ public class RoomBookingServiceImpl implements RoomBookingService {
     @Override
     public List<RoomBooking> getBookingsForGuest(Long guestId) {
         return roomBookingRepository.findByGuestId(guestId);
+    }
+
+    // ✅ REQUIRED BY INTERFACE
+    @Override
+    public void deactivateBooking(Long id) {
+        RoomBooking booking = roomBookingRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Booking not found: " + id));
+        booking.setActive(false);
+        roomBookingRepository.save(booking);
     }
 }
