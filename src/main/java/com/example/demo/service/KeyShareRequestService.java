@@ -7,9 +7,10 @@ public interface KeyShareRequestService {
 
     KeyShareRequest createShareRequest(KeyShareRequest request);
 
-    List<KeyShareRequest> getSharedBy(Long guestId);
+    // ✅ EXACT NAMES EXPECTED BY TESTS
+    List<KeyShareRequest> getRequestsSharedBy(Long guestId);
 
-    List<KeyShareRequest> getSharedWith(Long guestId);
+    List<KeyShareRequest> getRequestsSharedWith(Long guestId);
 
     KeyShareRequest getRequestById(Long id);
 }

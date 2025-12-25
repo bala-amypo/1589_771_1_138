@@ -1,10 +1,10 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Guest;
 import com.example.demo.repository.GuestRepository;
 import com.example.demo.service.GuestService;
-import com.example.demo.exception.ResourceNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,30 +12,30 @@ import java.util.List;
 @Service
 public class GuestServiceImpl implements GuestService {
 
-    @Autowired
-    private GuestRepository guestRepository;
+    private final GuestRepository guestRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Override
-    public Guest createGuest(Guest guest) {
-        return guestRepository.save(guest);
+    // ✅ REQUIRED BY TESTS
+    public GuestServiceImpl(GuestRepository guestRepository,
+                            PasswordEncoder passwordEncoder) {
+        this.guestRepository = guestRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public Guest loginGuest(String email, String password) {
-        Guest guest = guestRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Guest not found with email: " + email));
-
-        if (guest.getPassword().equals(password)) {
-            return guest;
-        } else {
-            throw new RuntimeException("Invalid email or password");
+    public Guest createGuest(Guest guest) {
+        if (guestRepository.existsByEmail(guest.getEmail())) {
+            throw new IllegalArgumentException("Email already exists");
         }
+        guest.setPassword(passwordEncoder.encode(guest.getPassword()));
+        return guestRepository.save(guest);
     }
 
     @Override
     public Guest getGuestById(Long id) {
         return guestRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Guest not found with id: " + id));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Guest not found: " + id));
     }
 
     @Override
@@ -44,29 +44,20 @@ public class GuestServiceImpl implements GuestService {
     }
 
     @Override
-    public Guest updateGuest(Long id, Guest guestDetails) {
-        Guest guest = getGuestById(id);
-        
-        guest.setFullName(guestDetails.getFullName());
-        guest.setEmail(guestDetails.getEmail());
-        guest.setPhoneNumber(guestDetails.getPhoneNumber());
-        guest.setVerified(guestDetails.getVerified());
-        guest.setRole(guestDetails.getRole());
-        guest.setActive(guestDetails.getActive());
-
-        return guestRepository.save(guest);
+    public Guest updateGuest(Long id, Guest updated) {
+        Guest existing = getGuestById(id);
+        existing.setFullName(updated.getFullName());
+        existing.setPhoneNumber(updated.getPhoneNumber());
+        existing.setVerified(updated.getVerified());
+        existing.setActive(updated.getActive());
+        existing.setRole(updated.getRole());
+        return guestRepository.save(existing);
     }
 
     @Override
     public void deactivateGuest(Long id) {
         Guest guest = getGuestById(id);
-        guest.setActive(false); 
+        guest.setActive(false);
         guestRepository.save(guest);
-    }
-
-    @Override
-    public void deleteGuest(Long id) {
-        Guest guest = getGuestById(id);
-        guestRepository.delete(guest);
     }
 }

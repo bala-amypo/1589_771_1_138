@@ -6,7 +6,6 @@ import com.example.demo.model.RoomBooking;
 import com.example.demo.repository.DigitalKeyRepository;
 import com.example.demo.repository.RoomBookingRepository;
 import com.example.demo.service.DigitalKeyService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,16 +16,19 @@ import java.util.UUID;
 @Service
 public class DigitalKeyServiceImpl implements DigitalKeyService {
 
-    @Autowired
-    private DigitalKeyRepository keyRepository;
+    private final DigitalKeyRepository keyRepository;
+    private final RoomBookingRepository bookingRepository;
 
-    @Autowired
-    private RoomBookingRepository bookingRepository;
+    // ✅ REQUIRED BY TESTS
+    public DigitalKeyServiceImpl(DigitalKeyRepository keyRepository,
+                                 RoomBookingRepository bookingRepository) {
+        this.keyRepository = keyRepository;
+        this.bookingRepository = bookingRepository;
+    }
 
     @Override
     @Transactional
     public DigitalKey generateKey(Long bookingId) {
-
         RoomBooking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Booking not found: " + bookingId));
@@ -39,17 +41,10 @@ public class DigitalKeyServiceImpl implements DigitalKeyService {
         key.setBooking(booking);
         key.setKeyValue(UUID.randomUUID().toString());
         key.setIssuedAt(Instant.now());
-        key.setExpiresAt(Instant.now().plusSeconds(86400)); // 24 hours
+        key.setExpiresAt(Instant.now().plusSeconds(86400));
         key.setActive(true);
 
         return keyRepository.save(key);
-    }
-
-    @Override
-    public DigitalKey getKeyById(Long id) {
-        return keyRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Key not found: " + id));
     }
 
     @Override
@@ -61,7 +56,6 @@ public class DigitalKeyServiceImpl implements DigitalKeyService {
 
     @Override
     public List<DigitalKey> getKeysForGuest(Long guestId) {
-        // IMPORTANT: method name must match repository
         return keyRepository.findByBookingGuestId(guestId);
     }
 }
