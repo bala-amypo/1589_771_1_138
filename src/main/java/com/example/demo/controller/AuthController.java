@@ -39,3 +39,16 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 }
+
+
+
+
+
+
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/dynamic-pricing")
+@SecurityRequirement(name = "bearerAuth")
