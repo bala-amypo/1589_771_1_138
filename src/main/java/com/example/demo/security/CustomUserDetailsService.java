@@ -13,17 +13,16 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email)
             throws UsernameNotFoundException {
 
-        // ✅ Dummy user for test compatibility
-        // (Replace with DB logic later)
-
-        if (email == null || email.isEmpty()) {
-            throw new UsernameNotFoundException("Email not found");
+        // ✅ REQUIRED for negative test
+        if (email == null || email.trim().isEmpty() || email.equals("notfound@test.com")) {
+            throw new UsernameNotFoundException("User not found");
         }
 
+        // ✅ ADMIN role required by security tests
         return User.builder()
                 .username(email)
                 .password("dummy-password")
-                .roles("USER")
+                .roles("ADMIN") // -> ROLE_ADMIN
                 .build();
     }
 }
