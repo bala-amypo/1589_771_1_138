@@ -5,10 +5,14 @@ import com.example.demo.service.AccessLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/access-logs")
+@SecurityRequirement(name = "bearerAuth")
+
 public class AccessLogController {
 
     @Autowired

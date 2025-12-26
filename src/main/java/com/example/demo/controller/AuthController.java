@@ -6,12 +6,15 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
+@SecurityRequirement(name = "bearerAuth")
 @Tag(name = "Authentication", description = "Endpoints for user registration and login")
 public class AuthController {
 
@@ -45,10 +48,5 @@ public class AuthController {
 
 
 
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
-import java.util.List;
 
-@RestController
-@RequestMapping("/api/dynamic-pricing")
-@SecurityRequirement(name = "bearerAuth")

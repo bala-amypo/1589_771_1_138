@@ -3,12 +3,16 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 
 import java.util.List;
 import com.example.demo.model.Guest;
 import com.example.demo.service.GuestService;
 @RestController
 @RequestMapping("/api/guests")
+@SecurityRequirement(name = "bearerAuth")
+
 @Tag(name = "Guest Management", description = "Endpoints for managing hotel guests")
 public class GuestController {
 
