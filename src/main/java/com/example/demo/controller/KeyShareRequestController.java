@@ -1,42 +1,47 @@
 package com.example.demo.controller;
-
-import com.example.demo.model.KeyShareRequest;
-import com.example.demo.service.KeyShareRequestService;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 
 import java.util.List;
-
+import com.example.demo.model.Guest;
+import com.example.demo.service.GuestService;
 @RestController
-@RequestMapping("/api/key-share-requests")
+@RequestMapping("/api/guests")
 @SecurityRequirement(name = "bearerAuth")
 
-public class KeyShareRequestController {
+@Tag(name = "Guest Management", description = "Endpoints for managing hotel guests")
+public class GuestController {
 
-    private final KeyShareRequestService keyShareRequestService;
-
-    public KeyShareRequestController(KeyShareRequestService keyShareRequestService) {
-        this.keyShareRequestService = keyShareRequestService;
-    }
+    @Autowired
+    private GuestService guestService;
 
     @PostMapping
-    public KeyShareRequest create(@RequestBody KeyShareRequest request) {
-        return keyShareRequestService.createShareRequest(request);
+    public ResponseEntity<Guest> createGuest(@RequestBody Guest guest) {
+        return ResponseEntity.ok(guestService.createGuest(guest));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Guest> updateGuest(@PathVariable Long id, @RequestBody Guest guest) {
+        return ResponseEntity.ok(guestService.updateGuest(id, guest));
     }
 
     @GetMapping("/{id}")
-    public KeyShareRequest getById(@PathVariable Long id) {
-        return keyShareRequestService.getRequestById(id);
+    public ResponseEntity<Guest> getGuestById(@PathVariable Long id) {
+        return ResponseEntity.ok(guestService.getGuestById(id));
     }
 
-    @GetMapping("/shared-by/{guestId}")
-    public List<KeyShareRequest> getSharedBy(@PathVariable Long guestId) {
-        return keyShareRequestService.getRequestsSharedBy(guestId);
+    @GetMapping
+    public ResponseEntity<List<Guest>> getAllGuests() {
+        return ResponseEntity.ok(guestService.getAllGuests());
     }
 
-    @GetMapping("/shared-with/{guestId}")
-    public List<KeyShareRequest> getSharedWith(@PathVariable Long guestId) {
-        return keyShareRequestService.getRequestsSharedWith(guestId);
+    @PutMapping("/{id}/deactivate")
+    public ResponseEntity<Void> deactivateGuest(@PathVariable Long id) {
+        guestService.deactivateGuest(id);
+        return ResponseEntity.noContent().build();
     }
 }
