@@ -37,10 +37,10 @@ public class AccessLogServiceImpl implements AccessLogService {
     @Override
     public AccessLog createLog(AccessLog log) {
 
-        // ✅ CRITICAL FIX FOR testAccessLogFutureTimeNegative
+        // ✅ REQUIRED FOR testAccessLogFutureTimeNegative
         Instant now = Instant.now();
         if (log.getAccessTime().isAfter(now)) {
-            throw new RuntimeException("Access time cannot be in the future");
+            throw new IllegalArgumentException("Access time cannot be in the future");
         }
 
         DigitalKey key = digitalKeyRepository.findById(
