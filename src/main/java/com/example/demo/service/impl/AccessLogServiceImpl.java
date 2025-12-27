@@ -37,15 +37,16 @@ public class AccessLogServiceImpl implements AccessLogService {
     @Override
     public AccessLog createLog(AccessLog log) {
 
-        // ✅ REQUIRED BY testAccessLogFutureTimeNegative
-        if (log.getAccessTime().isAfter(Instant.now())) {
+        // ✅ CRITICAL FIX FOR testAccessLogFutureTimeNegative
+        Instant now = Instant.now();
+        if (log.getAccessTime().isAfter(now)) {
             throw new RuntimeException("Access time cannot be in the future");
         }
 
         DigitalKey key = digitalKeyRepository.findById(
                 log.getDigitalKey().getId()
         ).orElseThrow(() ->
-                new ResourceNotFoundException("Digital key not found")
+                new ResourceNotFoundException("Key not found")
         );
 
         Guest guest = guestRepository.findById(
@@ -57,7 +58,7 @@ public class AccessLogServiceImpl implements AccessLogService {
         log.setDigitalKey(key);
         log.setGuest(guest);
 
-        if (key.getActive() && Instant.now().isBefore(key.getExpiresAt())) {
+        if (key.getActive() && now.isBefore(key.getExpiresAt())) {
             log.setResult("SUCCESS");
         } else {
             log.setResult("DENIED");
@@ -67,13 +68,13 @@ public class AccessLogServiceImpl implements AccessLogService {
     }
 
     @Override
-    public List<AccessLog> getLogsForKey(Long keyId) {
-        return accessLogRepository.findByDigitalKeyId(keyId);
+    public List<AccessLog> getLogsForGuest(Long guestId) {
+        return accessLogRepository.findByGuestId(guestId);
     }
 
     @Override
-    public List<AccessLog> getLogsForGuest(Long guestId) {
-        return accessLogRepository.findByGuestId(guestId);
+    public List<AccessLog> getLogsForKey(Long keyId) {
+        return accessLogRepository.findByDigitalKeyId(keyId);
     }
 
     @Override
