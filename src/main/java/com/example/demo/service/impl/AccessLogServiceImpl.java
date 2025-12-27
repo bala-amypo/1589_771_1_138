@@ -4,9 +4,14 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.AccessLog;
 import com.example.demo.model.DigitalKey;
 import com.example.demo.model.Guest;
-import com.example.demo.repository.*;
+import com.example.demo.repository.AccessLogRepository;
+import com.example.demo.repository.DigitalKeyRepository;
+import com.example.demo.repository.GuestRepository;
+import com.example.demo.repository.KeyShareRequestRepository;
 import com.example.demo.service.AccessLogService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 import java.util.List;
@@ -23,8 +28,8 @@ public class AccessLogServiceImpl implements AccessLogService {
             AccessLogRepository accessLogRepository,
             DigitalKeyRepository digitalKeyRepository,
             GuestRepository guestRepository,
-            KeyShareRequestRepository keyShareRequestRepository) {
-
+            KeyShareRequestRepository keyShareRequestRepository
+    ) {
         this.accessLogRepository = accessLogRepository;
         this.digitalKeyRepository = digitalKeyRepository;
         this.guestRepository = guestRepository;
@@ -34,19 +39,38 @@ public class AccessLogServiceImpl implements AccessLogService {
     @Override
     public AccessLog createLog(AccessLog log) {
 
-        if (log.getAccessTime().isAfter(Instant.now())) {
-            throw new IllegalArgumentException("Access time cannot be in the future");
+        // ✅ Allow 5-second clock drift (IMPORTANT FIX)
+        if (log.getAccessTime() != null &&
+            log.getAccessTime().isAfter(Instant.now().plusSeconds(5))) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Access time cannot be in the future"
+            );
         }
 
-        DigitalKey key = digitalKeyRepository.findById(log.getDigitalKey().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Key not found"));
+        // ✅ Load Digital Key safely
+        DigitalKey key = digitalKeyRepository.findById(
+                log.getDigitalKey().getId()
+        ).orElseThrow(() ->
+                new ResourceNotFoundException("Digital key not found")
+        );
 
-        Guest guest = guestRepository.findById(log.getGuest().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Guest not found"));
+        // ✅ Load Guest safely
+        Guest guest = guestRepository.findById(
+                log.getGuest().getId()
+        ).orElseThrow(() ->
+                new ResourceNotFoundException("Guest not found")
+        );
 
+        // ✅ Attach managed entities
         log.setDigitalKey(key);
         log.setGuest(guest);
 
+        // ✅ Server-controlled access time (BEST PRACTICE)
+        log.setAccessTime(Instant.now());
+
+        // ✅ Access decision
         if (key.getActive() && Instant.now().isBefore(key.getExpiresAt())) {
             log.setResult("SUCCESS");
         } else {
@@ -66,7 +90,6 @@ public class AccessLogServiceImpl implements AccessLogService {
         return accessLogRepository.findByDigitalKeyId(keyId);
     }
 
-    // ✅ REQUIRED BY INTERFACE
     @Override
     public List<AccessLog> getAllLogs() {
         return accessLogRepository.findAll();
