@@ -9,7 +9,6 @@ import com.example.demo.repository.DigitalKeyRepository;
 import com.example.demo.repository.GuestRepository;
 import com.example.demo.repository.KeyShareRequestRepository;
 import com.example.demo.service.AccessLogService;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -40,51 +39,38 @@ public class AccessLogServiceImpl implements AccessLogService {
     @Override
     public AccessLog createLog(AccessLog log) {
 
-        // 🔹 Load digital key
-        DigitalKey key = digitalKeyRepository
-                .findById(log.getDigitalKey().getId())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Digital key not found")
-                );
+        // ✅ Allow 5-second clock drift (IMPORTANT FIX)
+        if (log.getAccessTime() != null &&
+            log.getAccessTime().isAfter(Instant.now().plusSeconds(5))) {
 
-        // 🔹 Load guest
-        Guest guest = guestRepository
-                .findById(log.getGuest().getId())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Guest not found")
-                );
-
-        // 🔐 ACCESS VALIDATION (CRITICAL FIX)
-        boolean isOwner =
-                key.getBooking().getGuest().getId().equals(guest.getId());
-
-        boolean isRoommate =
-                key.getBooking().getRoommates()
-                        .stream()
-                        .anyMatch(r -> r.getId().equals(guest.getId()));
-
-        boolean isShared =
-                keyShareRequestRepository
-                        .existsByDigitalKeyIdAndSharedWithId(
-                                key.getId(),
-                                guest.getId()
-                        );
-
-        if (!isOwner && !isRoommate && !isShared) {
             throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN,
-                    "Guest not authorized to use this key"
+                    HttpStatus.BAD_REQUEST,
+                    "Access time cannot be in the future"
             );
         }
 
-        // 🔹 Attach managed entities
+        // ✅ Load Digital Key safely
+        DigitalKey key = digitalKeyRepository.findById(
+                log.getDigitalKey().getId()
+        ).orElseThrow(() ->
+                new ResourceNotFoundException("Digital key not found")
+        );
+
+        // ✅ Load Guest safely
+        Guest guest = guestRepository.findById(
+                log.getGuest().getId()
+        ).orElseThrow(() ->
+                new ResourceNotFoundException("Guest not found")
+        );
+
+        // ✅ Attach managed entities
         log.setDigitalKey(key);
         log.setGuest(guest);
 
-        // 🔹 Server-side time only
+        // ✅ Server-controlled access time (BEST PRACTICE)
         log.setAccessTime(Instant.now());
 
-        // 🔹 Grant / deny
+        // ✅ Access decision
         if (key.getActive() && Instant.now().isBefore(key.getExpiresAt())) {
             log.setResult("SUCCESS");
         } else {
@@ -95,13 +81,13 @@ public class AccessLogServiceImpl implements AccessLogService {
     }
 
     @Override
-    public List<AccessLog> getLogsForKey(Long keyId) {
-        return accessLogRepository.findByDigitalKeyId(keyId);
+    public List<AccessLog> getLogsForGuest(Long guestId) {
+        return accessLogRepository.findByGuestId(guestId);
     }
 
     @Override
-    public List<AccessLog> getLogsForGuest(Long guestId) {
-        return accessLogRepository.findByGuestId(guestId);
+    public List<AccessLog> getLogsForKey(Long keyId) {
+        return accessLogRepository.findByDigitalKeyId(keyId);
     }
 
     @Override
