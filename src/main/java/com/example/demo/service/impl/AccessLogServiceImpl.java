@@ -37,7 +37,7 @@ public class AccessLogServiceImpl implements AccessLogService {
     @Override
     public AccessLog createLog(AccessLog log) {
 
-        // ✅ REQUIRED FOR testAccessLogFutureTimeNegative
+      
         Instant now = Instant.now();
         if (log.getAccessTime().isAfter(now)) {
             throw new IllegalArgumentException("Access time cannot be in the future");
